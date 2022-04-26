@@ -1,7 +1,9 @@
-import numpy as np
-
-
 def const(A, b, x, e, imax):
+    """
+    A - матрица коэффициентов
+    b - столбец свободных членов
+    x - столбец решений
+    """
     r = b - A.dot(x)
     d = np.transpose(r).dot(r)
     d0 = d
@@ -13,6 +15,7 @@ def const(A, b, x, e, imax):
     print(x, r, i)
 
 
+import numpy as np
 A = np.array([[1, 1], [1, 1]])
 b = np.transpose(np.array([1, 1]))
 x = np.transpose(np.array([1, 1]))
