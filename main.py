@@ -18,7 +18,7 @@ def const_step_method(A, b, x, e, imax, alpha):
 
     Returns:
     Сначала находится приближенное значение столбца x, далее в цикле пересчитывается невязка.
-    Выводится полученный столбец решений x, величина ошибки (расхождения) приближенного равенства и количество шагов.
+    Выводится полученный столбец решений x, величина ошибки (расхождения) приближенного равенства и количество итераций.
     i - int (целочисленный тип данных), переменная, которая хранит значения следующего объекта
     d - float (вещественный тип данных), квадрат нормы невязки
     x - столбец решений
@@ -40,7 +40,7 @@ def const_step_method(A, b, x, e, imax, alpha):
 
 def var_step_method(A, b, x, e, imax):
     """
-    Функция с переменным шагом альфа (а), он изменяется в зависимости от величины расхождения
+    Функция с переменным шагом альфа (аlpha), он изменяется в зависимости от величины расхождения
     В данном случае умножаем матрицу коэффициентов на невязку, считаем альфу по формуле.
     Потом находится приближенное значение столбца x, далее в цикле пересчитывается невязка.
     Выводится полученный столбец решений x, величина ошибки (расхождения) приближенного равенства и количество шагов.
@@ -60,6 +60,20 @@ def var_step_method(A, b, x, e, imax):
     return x, np.sqrt(d), i
 
 def conjugate_gradients_method(A, b, x, e, imax):
+    """
+    Функция метода сопряженных градиентов.
+    Так же как и в предыдущих случаях, умножаем матрицу коэффициентов на невязку, считаем альфу по формуле.
+    Находится приближенное значение столбца x, далее в цикле пересчитывается невязка.
+
+    Returns:
+    Выводится полученный столбец решений x, величина ошибки (расхождения) приближенного равенства, количество итераций и массив из х.
+    i - int (целочисленный тип данных), переменная, которая хранит значения следующего объекта
+    delt - float (вещественный тип данных), квадрат нормы невязки
+    x - столбец решений
+
+    !!!Написать что такое arr!!!
+
+    """
     arr = np.empty((0, 2), float)
     i = 0
     residuum = b - A.dot(x)
@@ -104,8 +118,11 @@ def main():
         k += 1
     alpha = 0.33
     fig, ax = plt.subplots()
+    plt.title("Graphic for matrix 2*2")
+    plt.xlabel("Alpha")
+    plt.ylabel("Discrepancy")
     plt.yscale('log')
-    ax.vlines(alpha, 0, 1, color='r')
+    ax.vlines(alpha, 0, det.max(), color='r')
     ax.plot(alph_arr, det)
     plt.show()
 
@@ -134,20 +151,23 @@ def main():
         k += 1
     alpha = 0.31
     fig, ax = plt.subplots()
+    plt.title("Graphic for matrix 3*3")
+    plt.xlabel("Alpha")
+    plt.ylabel("Discrepancy")
     plt.yscale('log')
-    ax.vlines(alpha, 0, 1, color='r')
+    ax.vlines(alpha, 0, det.max(), color='r')
     ax.plot(alph_arr, det)
     plt.show()
 
 
     print("Matrix 4*4")
     # A = np.array([[1, 1, 2, 3], [1, 2, 3, -1], [3, -1, -1, -2], [2, 3, -1, -1]], dtype=float)
-    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(3), k=-1)
-    b = np.transpose(np.array([3, 2, 7, 1], dtype=float))
-    x = np.transpose(np.array([0, 4, 0, 3], dtype=float))  # [1, 3, 1, 4]
+    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2)
+    b = np.transpose(np.array([7, 8, 6, 6], dtype=float))
+    x = np.transpose(np.array([1, 6, 1, 2], dtype=float))  # [2, 5, 3, 1]
     e = 0.01
-    imax = 1000
-    alpha = 0.0001
+    imax = 100
+    alpha = 0.18
     print("Constant step method")
     print(const_step_method(A, b, x, e, imax, alpha))
     print("Variable step method")
@@ -162,10 +182,13 @@ def main():
         alpha += 0.05
         det[k] = d
         k += 1
-    alpha = 0.13
+    alpha = 0.18
     fig, ax = plt.subplots()
+    plt.title("Graphic for matrix 4*4")
+    plt.xlabel("Alpha")
+    plt.ylabel("Discrepancy")
     plt.yscale('log')
-    ax.vlines(alpha, 0, 1, color='r')
+    ax.vlines(alpha, 0, det.max(), color='r')
     ax.plot(alph_arr, det)
     plt.show()
 
