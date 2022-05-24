@@ -46,10 +46,10 @@ def var_step_method(A, b, x, e, imax):
     Выводится полученный столбец решений x, величина ошибки (расхождения) приближенного равенства и количество шагов.
 
     """
+    i = 0
     residual = b - A.dot(x)
     d = np.transpose(residual).dot(residual)
     d0 = d
-    i = 0
     while (i < imax) and (d > e**2 * d0):
         q = A.dot(residual)
         alpha = d / (np.transpose(residual).dot(q))
@@ -115,7 +115,6 @@ def conjugate_gradients_method(A, b, x, e, imax):
         d = residual + betta * d
         i += 1
         arr = np.append(arr, np.array([x]), axis=0)
-        print(x)
     return x, np.sqrt(delt), i, arr
 
 
@@ -156,9 +155,9 @@ def conjugate_gradients_Newton_Raphson(A, b, x, imax, e, jmax, epsilon):
 def main():
 
     print("Matrix 2*2")
-    A = np.array([[2, 3], [4, 8]], dtype=float)
-    b = np.transpose(np.array([3, 10], dtype=float))
-    x = np.transpose(np.array([0, 1], dtype=float))  # [-1.5, 2]
+    A = np.array([[2, -1], [-1, 3]], dtype=float)
+    b = np.transpose(np.array([3, 4], dtype=float))
+    x = np.transpose(np.array([1, 1], dtype=float))  # [-1.5, 2]
     e = 0.1
     imax = 100
     alpha = 0.2
@@ -176,7 +175,7 @@ def main():
         alpha += 0.05
         det[k] = d
         k += 1
-    alpha = 0.12
+    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
     fig, ax = plt.subplots()
     plt.title("Graphic for matrix 2*2")
     plt.xlabel("Alpha")
@@ -188,9 +187,9 @@ def main():
 
 
     print("Matrix 3*3")
-    A = np.array([[3, 2, 1], [2, 3, 1], [2, 1, 3]], dtype=float)
-    b = np.transpose(np.array([5, -1, 4], dtype=float))
-    x = np.transpose(np.array([2, -2, 1], dtype=float))  # [3.5, -2.6, -0.08]
+    A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]], dtype=float)
+    b = np.transpose(np.array([1, 2, 3], dtype=float))
+    x = np.transpose(np.array([1, 2, 2], dtype=float))  # [3.5, -2.6, -0.08]
     e = 0.01
     imax = 100
     alpha = 0.5
@@ -209,7 +208,7 @@ def main():
         alpha += 0.05
         det[k] = d
         k += 1
-    alpha = 0.5
+    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
     fig, ax = plt.subplots()
     plt.title("Graphic for matrix 3*3")
     plt.xlabel("Alpha")
@@ -221,13 +220,13 @@ def main():
 
 
     print("Matrix 4*4")
-    # A = np.array([[1, 1, 2, 3], [1, 2, 3, -1], [3, -1, -1, -2], [2, 3, -1, -1]], dtype=float)
-    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2)
-    b = np.transpose(np.array([7, 8, 6, 6], dtype=float))
-    x = np.transpose(np.array([1, 6, 1, 2], dtype=float))  # [2, 5, 3, 1]
+    # A = np.array([[1, 2, 3, 0], [2, 4, -1, 2], [3, -1, 5, 1], [0, 2, 1, -3]], dtype=float)
+    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
+    b = np.transpose(np.array([3, 3, 3, 5], dtype=float))
+    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [2, 5, 3, 1]
     e = 0.01
-    imax = 100
-    alpha = 0.18
+    imax = 50
+    alpha = 0.3
     print("Constant step method")
     print(const_step_method(A, b, x, e, imax, alpha))
     print("Variable step method")
@@ -242,11 +241,12 @@ def main():
         alpha += 0.05
         det[k] = d
         k += 1
-    alpha = 0.18
+    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
     fig, ax = plt.subplots()
     plt.title("Graphic for matrix 4*4")
     plt.xlabel("Alpha")
     plt.ylabel("Residual")
+    plt.yscale('log')
     ax.vlines(alpha, 0, det.max(), color='r')
     ax.plot(alph_arr, det)
     plt.show()
@@ -258,9 +258,9 @@ def visualisation():
     #A = np.array([[3, 2], [2, 6]], dtype=float)
     #b = np.transpose(np.array([2, -8], dtype=float))
     #x = np.transpose(np.array([-2, 2], dtype=float))
-    A = np.array([[2, 3], [4, 8]], dtype=float)
+    A = np.array([[2, 3], [3, 8]], dtype=float)
     b = np.transpose(np.array([3, 10], dtype=float))
-    x = np.transpose(np.array([0, 1], dtype=float))  # [-1.5, 2]
+    x = np.transpose(np.array([-4, 2], dtype=float))  # [-1.5, 2]
     imax = 100
     e = 0.01
 
@@ -280,7 +280,7 @@ def visualisation():
             i += 1
         j += 1
         i = 0
-    lev = np.arange(1, 50, 2)
+    lev = np.arange(1, 50, 5)
     ax.contour(x1, x2, z, levels=lev, colors='gray')
     ax.grid()
     ax.spines['left'].set_position('center')
@@ -297,7 +297,7 @@ def visualisation():
     for c in x_array_grad:
         x_grad_graph = np.append(x_grad_graph, c[0])
         y_grad_graph = np.append(y_grad_graph, c[1])
-    plt.plot(x_grad_graph, y_grad_graph, 'o-r', alpha=0.5)
+    plt.plot(x_grad_graph, y_grad_graph, 'o-', color='black', alpha=0.8)
 
     print("Method of steepest decent")
     x_decent, d_decent, i_decent, x_array_decent = var_step_method_visualisation(A, b, x, e, imax)
@@ -308,13 +308,13 @@ def visualisation():
     for c in x_array_decent:
         x_decent_graph = np.append(x_decent_graph, c[0])
         y_decent_graph = np.append(y_decent_graph, c[1])
-    plt.plot(x_decent_graph, y_decent_graph, 'o-b', alpha=0.5)
+    plt.plot(x_decent_graph, y_decent_graph, 'o--', color='black', alpha=0.8)
     plt.show()
 
 def visualisation_Newton_Raphson():
-    A = np.array([[2, 3], [4, 8]], dtype=float)
+    A = np.array([[2, 3], [3, 8]], dtype=float)
     b = np.transpose(np.array([3, 10], dtype=float))
-    x = np.transpose(np.array([0, 1], dtype=float))  # [-1.5, 2]
+    x = np.transpose(np.array([-5, 2.5], dtype=float))  # [-1.5, 2]
     imax = 100
     jmax = 100
     e = 0.01
@@ -336,7 +336,7 @@ def visualisation_Newton_Raphson():
             i += 1
         j += 1
         i = 0
-    lev = np.arange(1, 50, 2)
+    lev = np.arange(1, 50, 5)
     ax.contour(x1, x2, z, levels=lev, colors='gray')
     ax.grid()
     ax.spines['left'].set_position('center')
@@ -353,7 +353,7 @@ def visualisation_Newton_Raphson():
     for coord in x_array_grad:
         x_grad_graph = np.append(x_grad_graph, coord[0])
         y_grad_graph = np.append(y_grad_graph, coord[1])
-    plt.plot(x_grad_graph, y_grad_graph, 'o-r', alpha=0.5)
+    plt.plot(x_grad_graph, y_grad_graph, 'o-', color='black', alpha=0.8)
 
     print("Method of steepest decent")
     x_decent, d_decent, i_decent, x_array_decent = var_step_method_visualisation(A, b, x, e, imax)
@@ -364,7 +364,7 @@ def visualisation_Newton_Raphson():
     for coord in x_array_decent:
         x_decent_graph = np.append(x_decent_graph, coord[0])
         y_decent_graph = np.append(y_decent_graph, coord[1])
-    plt.plot(x_decent_graph, y_decent_graph, 'o-b', alpha=0.5)
+    plt.plot(x_decent_graph, y_decent_graph, 'o--', color='black', alpha=0.8)
     plt.show()
 
 
