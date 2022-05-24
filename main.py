@@ -80,7 +80,6 @@ def var_step_method_visualisation(A, b, x, e, imax):
         d = np.transpose(residual).dot(residual)
         i += 1
         arr = np.append(arr, np.array([x]), axis=0)
-        print(x)
     return x, np.sqrt(d), i, arr
 
 def conjugate_gradients_method(A, b, x, e, imax):
@@ -94,8 +93,6 @@ def conjugate_gradients_method(A, b, x, e, imax):
     i - int (целочисленный тип данных), переменная, которая хранит значения следующего объекта
     delt - float (вещественный тип данных), квадрат нормы невязки
     x - столбец решений
-
-    !!!Написать что такое arr!!!
 
     """
     arr = np.empty((0, 2), float)
@@ -151,8 +148,7 @@ def conjugate_gradients_Newton_Raphson(A, b, x, imax, e, jmax, epsilon):
         i += 1
     return x, np.sqrt(delta_new), i, x_arr
 
-
-def main():
+def steepest_decent():
 
     print("Matrix 2*2")
     A = np.array([[2, -1], [-1, 3]], dtype=float)
@@ -160,30 +156,11 @@ def main():
     x = np.transpose(np.array([1, 1], dtype=float))  # [-1.5, 2]
     e = 0.1
     imax = 100
-    alpha = 0.2
+    alpha = 0.3
     print("Constant step method")
     print(const_step_method(A, b, x, e, imax, alpha))
     print("Variable step method")
     print(var_step_method(A, b, x, e, imax))
-
-    alpha = 0
-    alph_arr = np.arange(0, 1, 0.05)
-    det = np.zeros(len(alph_arr))
-    k = 0
-    while alpha < 1:
-        x, d, i = const_step_method(A, b, x, e, imax, alpha)
-        alpha += 0.05
-        det[k] = d
-        k += 1
-    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
-    fig, ax = plt.subplots()
-    plt.title("Graphic for matrix 2*2")
-    plt.xlabel("Alpha")
-    plt.ylabel("Residual")
-    plt.yscale('log')
-    ax.plot(alph_arr, det)
-    ax.vlines(alpha, 0, det.max(), color='r')
-    plt.show()
 
 
     print("Matrix 3*3")
@@ -192,36 +169,16 @@ def main():
     x = np.transpose(np.array([1, 2, 2], dtype=float))  # [3.5, -2.6, -0.08]
     e = 0.01
     imax = 100
-    alpha = 0.5
+    alpha = 0.3
     print("Constant step method")
     print(const_step_method(A, b, x, e, imax, alpha))
     print("Variable step method")
     print(var_step_method(A, b, x, e, imax))
 
 
-    alpha = 0
-    alph_arr = np.arange(0, 1, 0.05)
-    det = np.zeros(len(alph_arr))
-    k = 0
-    while alpha < 1:
-        x, d, i = const_step_method(A, b, x, e, imax, alpha)
-        alpha += 0.05
-        det[k] = d
-        k += 1
-    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
-    fig, ax = plt.subplots()
-    plt.title("Graphic for matrix 3*3")
-    plt.xlabel("Alpha")
-    plt.ylabel("Residual")
-    plt.yscale('log')
-    ax.vlines(alpha, 0, det.max(), color='r')
-    ax.plot(alph_arr, det)
-    plt.show()
-
-
     print("Matrix 4*4")
-    # A = np.array([[1, 2, 3, 0], [2, 4, -1, 2], [3, -1, 5, 1], [0, 2, 1, -3]], dtype=float)
-    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
+    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(
+        np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
     b = np.transpose(np.array([3, 3, 3, 5], dtype=float))
     x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [2, 5, 3, 1]
     e = 0.01
@@ -232,32 +189,80 @@ def main():
     print("Variable step method")
     print(var_step_method(A, b, x, e, imax))
 
-    alpha = 0
+def graphs_steepest_decent():
+    A = np.array([[2, -1], [-1, 3]], dtype=float)
+    b = np.transpose(np.array([3, 4], dtype=float))
+    x = np.transpose(np.array([1, 1], dtype=float))  # [-1.5, 2]
+    e = 0.1
+    imax = 100
     alph_arr = np.arange(0, 1, 0.05)
     det = np.zeros(len(alph_arr))
     k = 0
+    for alpha in alph_arr:
+        x, d, i = const_step_method(A, b, x, e, imax, alpha)
+        det[k] = d
+        k += 1
+    alpha_f = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
+    fig, ax = plt.subplots()
+    plt.title("Graph for matrix 2*2")
+    plt.xlabel("Alpha")
+    plt.ylabel("Residual")
+    plt.yscale('log')
+    ax.plot(alph_arr, det, color='black')
+    ax.vlines(alpha_f, 0, det.max(), color='black', linestyle='--')
+    plt.show()
+
+
+    A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]], dtype=float)
+    b = np.transpose(np.array([1, 2, 3], dtype=float))
+    x = np.transpose(np.array([1, 2, 2], dtype=float))  # [3.5, -2.6, -0.08]
+    e = 0.01
+    imax = 100
+    alph_arr = np.arange(0, 1, 0.05)
+    det = np.zeros(len(alph_arr))
+    k = 0
+    alpha = 0
     while alpha < 1:
         x, d, i = const_step_method(A, b, x, e, imax, alpha)
         alpha += 0.05
         det[k] = d
         k += 1
-    alpha = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
+    alpha_f = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
     fig, ax = plt.subplots()
-    plt.title("Graphic for matrix 4*4")
+    plt.title("Graph for matrix 3*3")
     plt.xlabel("Alpha")
     plt.ylabel("Residual")
     plt.yscale('log')
-    ax.vlines(alpha, 0, det.max(), color='r')
-    ax.plot(alph_arr, det)
+    ax.vlines(alpha_f, 0, det.max(), color='black', linestyle='--')
+    ax.plot(alph_arr, det, color='black')
     plt.show()
 
+
+    A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(
+        np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
+    b = np.transpose(np.array([3, 3, 3, 5], dtype=float))
+    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [2, 5, 3, 1]
+    e = 0.01
+    imax = 50
+    alph_arr = np.arange(0, 1, 0.05)
+    det = np.zeros(len(alph_arr))
+    k = 0
+    for alpha in alph_arr:
+        x, d, i = const_step_method(A, b, x, e, imax, alpha)
+        det[k] = d
+        k += 1
+    alpha_f = np.transpose(b - A.dot(x)).dot(b - A.dot(x)) / (np.transpose(b - A.dot(x)).dot(A.dot(b - A.dot(x))))
+    fig, ax = plt.subplots()
+    plt.title("Graph for matrix 4*4")
+    plt.xlabel("Alpha")
+    plt.ylabel("Residual")
+    plt.yscale('log')
+    ax.vlines(alpha_f, 0, det.max(), color='black', linestyle='--')
+    ax.plot(alph_arr, det, color='black')
+    plt.show()
+
+
 def visualisation():
-    #A = np.array([[3, 7], [2, 8]], dtype=float)
-    #b = np.transpose(np.array([4, 6], dtype=float))
-    #x = np.transpose(np.array([-5, -4], dtype=float))  # [-1, 1]
-    #A = np.array([[3, 2], [2, 6]], dtype=float)
-    #b = np.transpose(np.array([2, -8], dtype=float))
-    #x = np.transpose(np.array([-2, 2], dtype=float))
     A = np.array([[2, 3], [3, 8]], dtype=float)
     b = np.transpose(np.array([3, 10], dtype=float))
     x = np.transpose(np.array([-4, 2], dtype=float))  # [-1.5, 2]
@@ -269,7 +274,6 @@ def visualisation():
 
     x1grid, x2grid = np.meshgrid(x1, x2)
     fig, ax = plt.subplots()
-    #z = 0.5 * A[0, 0] * x1grid ** 2 + 0.5 * (A[1, 0] + A[0, 1] * x1grid * x2grid) + 0.5 * A[1, 1] * x2grid ** 2 - b[0] * x1grid - b[1] * x2grid - с
     z = np.zeros((len(x1), len(x1)))
     c = 0
     i, j = 0, 0
@@ -325,7 +329,6 @@ def visualisation_Newton_Raphson():
 
     x1grid, x2grid = np.meshgrid(x1, x2)
     fig, ax = plt.subplots()
-    # z = 0.5 * A[0, 0] * x1grid ** 2 + 0.5 * (A[1, 0] + A[0, 1] * x1grid * x2grid) + 0.5 * A[1, 1] * x2grid ** 2 - b[0] * x1grid - b[1] * x2grid - с
     z = np.zeros((len(x1), len(x1)))
     c = 0
     i, j = 0, 0
@@ -367,7 +370,11 @@ def visualisation_Newton_Raphson():
     plt.plot(x_decent_graph, y_decent_graph, 'o--', color='black', alpha=0.8)
     plt.show()
 
+def main():
+    steepest_decent()
+    graphs_steepest_decent()
+    visualisation()
+    visualisation_Newton_Raphson()
 
-main()
-visualisation()
-visualisation_Newton_Raphson()
+if __name__ == "__main__":
+    main()
