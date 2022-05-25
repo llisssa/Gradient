@@ -153,7 +153,7 @@ def steepest_decent():
     print("Matrix 2*2")
     A = np.array([[2, -1], [-1, 3]], dtype=float)
     b = np.transpose(np.array([3, 4], dtype=float))
-    x = np.transpose(np.array([1, 1], dtype=float))  # [-1.5, 2]
+    x = np.transpose(np.array([1, 1], dtype=float))  # [2.6, 2.2]
     e = 0.1
     imax = 100
     alpha = 0.3
@@ -166,7 +166,7 @@ def steepest_decent():
     print("Matrix 3*3")
     A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]], dtype=float)
     b = np.transpose(np.array([1, 2, 3], dtype=float))
-    x = np.transpose(np.array([1, 2, 2], dtype=float))  # [3.5, -2.6, -0.08]
+    x = np.transpose(np.array([1, 2, 2], dtype=float))  # [2.5, 4, 3.5]
     e = 0.01
     imax = 100
     alpha = 0.3
@@ -180,7 +180,7 @@ def steepest_decent():
     A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(
         np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
     b = np.transpose(np.array([3, 3, 3, 5], dtype=float))
-    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [2, 5, 3, 1]
+    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [5, 0, 5, -2]
     e = 0.01
     imax = 50
     alpha = 0.3
@@ -192,7 +192,7 @@ def steepest_decent():
 def graphs_steepest_decent():
     A = np.array([[2, -1], [-1, 3]], dtype=float)
     b = np.transpose(np.array([3, 4], dtype=float))
-    x = np.transpose(np.array([1, 1], dtype=float))  # [-1.5, 2]
+    x = np.transpose(np.array([1, 1], dtype=float))
     e = 0.1
     imax = 100
     alph_arr = np.arange(0, 1, 0.05)
@@ -215,7 +215,7 @@ def graphs_steepest_decent():
 
     A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]], dtype=float)
     b = np.transpose(np.array([1, 2, 3], dtype=float))
-    x = np.transpose(np.array([1, 2, 2], dtype=float))  # [3.5, -2.6, -0.08]
+    x = np.transpose(np.array([1, 2, 2], dtype=float))
     e = 0.01
     imax = 100
     alph_arr = np.arange(0, 1, 0.05)
@@ -241,7 +241,7 @@ def graphs_steepest_decent():
     A = np.eye(4) + np.diag(np.ones(3), k=1) + np.diag(np.ones(2), k=-2) + np.diag(np.ones(2), k=2) + np.diag(
         np.ones(1), k=3) + np.diag(np.ones(1), k=-3)
     b = np.transpose(np.array([3, 3, 3, 5], dtype=float))
-    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))  # [2, 5, 3, 1]
+    x = np.transpose(np.array([4, -1, 4, -1], dtype=float))
     e = 0.01
     imax = 50
     alph_arr = np.arange(0, 1, 0.05)
@@ -262,17 +262,10 @@ def graphs_steepest_decent():
     plt.show()
 
 
-def visualisation():
-    A = np.array([[2, 3], [3, 8]], dtype=float)
-    b = np.transpose(np.array([3, 10], dtype=float))
-    x = np.transpose(np.array([-4, 2], dtype=float))  # [-1.5, 2]
-    imax = 100
-    e = 0.01
-
+def visualisation(A, b, x, imax, e):
     x1 = np.arange(-5, 5.01, 0.1)
     x2 = np.arange(-5, 5.01, 0.1)
 
-    x1grid, x2grid = np.meshgrid(x1, x2)
     fig, ax = plt.subplots()
     z = np.zeros((len(x1), len(x1)))
     c = 0
@@ -315,19 +308,10 @@ def visualisation():
     plt.plot(x_decent_graph, y_decent_graph, 'o--', color='black', alpha=0.8)
     plt.show()
 
-def visualisation_Newton_Raphson():
-    A = np.array([[2, 3], [3, 8]], dtype=float)
-    b = np.transpose(np.array([3, 10], dtype=float))
-    x = np.transpose(np.array([-5, 2.5], dtype=float))  # [-1.5, 2]
-    imax = 100
-    jmax = 100
-    e = 0.01
-    epsilon = 0.01
-
+def visualisation_Newton_Raphson(A, b, x, imax, e, jmax, epsilon):
     x1 = np.arange(-5, 5.01, 0.1)
     x2 = np.arange(-5, 5.01, 0.1)
 
-    x1grid, x2grid = np.meshgrid(x1, x2)
     fig, ax = plt.subplots()
     z = np.zeros((len(x1), len(x1)))
     c = 0
@@ -347,10 +331,17 @@ def visualisation_Newton_Raphson():
     ax.spines['bottom'].set_position('center')
     ax.spines['top'].set_color('none')
 
-    print("Method of Newton-Raphson")
+    f1 = open('output', 'w')
+    f1.write("Method of Newton-Raphson\n")
     x_grad, d_grad, i_grad, x_array_grad = conjugate_gradients_Newton_Raphson(A, b, x, imax, e, jmax, epsilon)
-    print("Approximate x values: ", x_grad, ", norm value: ", d_grad, ", number of iterations: ", i_grad)
-    print("All approximations:", x_array_grad)
+    f1.write("Approximate x values: ")
+    f1.write(str(x_grad))
+    f1.write("\nNorm value: ")
+    f1.write(str(d_grad))
+    f1.write("\nNumber of iterations: ")
+    f1.write(str(i_grad))
+    f1.write("\nAll approximations:")
+    f1.write(str(x_array_grad))
     x_grad_graph = np.array([x[0]], dtype=float)
     y_grad_graph = np.array([x[1]], dtype=float)
     for coord in x_array_grad:
@@ -358,10 +349,16 @@ def visualisation_Newton_Raphson():
         y_grad_graph = np.append(y_grad_graph, coord[1])
     plt.plot(x_grad_graph, y_grad_graph, 'o-', color='black', alpha=0.8)
 
-    print("Method of steepest decent")
+    f1.write("\nMethod of steepest decent")
     x_decent, d_decent, i_decent, x_array_decent = var_step_method_visualisation(A, b, x, e, imax)
-    print("Approximate x values: ", x_decent, ", norm value: ", d_decent, ", number of iterations: ", i_decent)
-    print("All approximations:", x_array_decent)
+    f1.write("\nApproximate x values: ")
+    f1.write(str(x_decent))
+    f1.write("\nNorm value: ")
+    f1.write(str(d_decent))
+    f1.write("\nNumber of iterations: ")
+    f1.write(str(i_decent))
+    f1.write("\nAll approximations:")
+    f1.write(str(x_array_decent))
     x_decent_graph = np.array([x[0]], dtype=float)
     y_decent_graph = np.array([x[1]], dtype=float)
     for coord in x_array_decent:
@@ -369,12 +366,30 @@ def visualisation_Newton_Raphson():
         y_decent_graph = np.append(y_decent_graph, coord[1])
     plt.plot(x_decent_graph, y_decent_graph, 'o--', color='black', alpha=0.8)
     plt.show()
+    f1.close()
 
 def main():
     steepest_decent()
     graphs_steepest_decent()
-    visualisation()
-    visualisation_Newton_Raphson()
+    A = np.array([[2, 3], [3, 8]], dtype=float)
+    b = np.transpose(np.array([3, 10], dtype=float))
+    x = np.transpose(np.array([-4, 2], dtype=float))  # [-0.86, 1.57]
+    imax = 100
+    e = 0.01
+    visualisation(A, b, x, imax, e)
+
+    f = open('input', 'r')
+    A = np.array(f.readline().rstrip().split(), dtype=float)
+    n = len(A)
+    A = A.reshape((int(np.sqrt(n)), int(np.sqrt(n))))
+    b = np.transpose(np.array(f.readline().rstrip().split(), dtype=float))
+    x = np.transpose(np.array(f.readline().rstrip().split(), dtype=float))  # [-0.86, 1.57]
+    imax = int(f.readline().rstrip())
+    jmax = int(f.readline().rstrip())
+    e = float(f.readline().rstrip())
+    epsilon = float(f.readline().rstrip())
+    visualisation_Newton_Raphson(A, b, x, imax, e, jmax, epsilon)
+    f.close()
 
 if __name__ == "__main__":
     main()
